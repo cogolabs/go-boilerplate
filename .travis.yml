@@ -7,7 +7,11 @@ before_install:
   - mv $TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR.git
 
 script:
-  - go test ./...
+  - go test ./... -race -coverprofile = ./coverprofile
+
+after_script:
+  - go get github.com/modocache/gover github.com/mattn/goveralls && gover && bash <(curl -s https://codecov.mycompany.com/bash) -f gover.coverprofile
+
 
 after_success:
   - >
