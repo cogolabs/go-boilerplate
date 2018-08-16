@@ -1,0 +1,16 @@
+dist: trusty
+language: go
+
+install: true
+
+before_install:
+  - mv $TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR.git
+
+script:
+  - go test ./...
+
+after_success:
+  - >
+    if [ -n "$TRAVIS_TAG" ]; then
+      bash <(curl -s https://raw.git.mycompany.com/kubes/deploy/master/deploy.sh)
+    fi
