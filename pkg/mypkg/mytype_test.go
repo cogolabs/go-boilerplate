@@ -31,7 +31,9 @@ func (s *mytypeSuite) TearDownTest() {
 }
 
 func (s *mytypeSuite) TestMyFunc() {
+	// If the following statement fails, the test will end immediately
 	s.Require().Equal(s.myt.PublicVal, testVal)
+
 	tests := []struct {
 		n        int
 		expected string
@@ -44,7 +46,8 @@ func (s *mytypeSuite) TestMyFunc() {
 	var val string
 	for _, tt := range tests {
 		val = s.myt.MyFunc(tt.n)
-		s.Equal(val, tt.expected)
+		// If the following statement fails, the test will fail, but continue
+		s.Assert().Equal(val, tt.expected)
 	}
 }
 
