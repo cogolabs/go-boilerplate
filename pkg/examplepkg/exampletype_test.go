@@ -1,4 +1,4 @@
-package mypkg
+package examplepkg
 
 import (
 	"testing"
@@ -8,29 +8,29 @@ import (
 
 var testVal = "FOOBAR"
 
-type mytypeSuite struct {
+type exampletypeSuite struct {
 	suite.Suite
-	myt *MyType
+	et *ExampleType
 }
 
-func (s *mytypeSuite) SetupSuite() {
+func (s *exampletypeSuite) SetupSuite() {
 	// Run before the first test
-	s.myt = New(testVal)
+	s.et = New(testVal)
 }
 
-func (s *mytypeSuite) TearDownSuite() {
+func (s *exampletypeSuite) TearDownSuite() {
 	// Run after the last test
 }
 
-func (s *mytypeSuite) SetupTest() {
+func (s *exampletypeSuite) SetupTest() {
 	// Run before each test
 }
 
-func (s *mytypeSuite) TearDownTest() {
+func (s *exampletypeSuite) TearDownTest() {
 	// Run after each test
 }
 
-func (s *mytypeSuite) TestMyFunc() {
+func (s *exampletypeSuite) TestMyFunc() {
 	// If the following statement fails, the test will end immediately
 	s.Require().Equal(s.myt.PublicVal, testVal)
 
@@ -45,13 +45,13 @@ func (s *mytypeSuite) TestMyFunc() {
 
 	var val string
 	for _, tt := range tests {
-		val = s.myt.MyFunc(tt.n)
+		val = s.et.MyFunc(tt.n)
 		// If the following statement fails, the test will fail, but continue
 		s.Assert().Equal(val, tt.expected)
 	}
 }
 
 func TestMyType(t *testing.T) {
-	tests := new(mytypeSuite)
+	tests := new(exampletypeSuite)
 	suite.Run(t, tests)
 }

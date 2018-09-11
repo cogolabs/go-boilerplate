@@ -4,7 +4,7 @@ Go boilerplate web server with all Cogo specific best practices
 ## Table of Contents
 
 - [Go BoilerPlate](#go-boilerplate)
-  - [Travis](#travis)
+  - [travis](#travis)
   - [cmd](#cmd)
   - [pkg](#pkg)
   - [main.go](#main)
@@ -16,9 +16,11 @@ Go boilerplate web server with all Cogo specific best practices
 
 
 # travis
-The first thing you're going to want to integrate into your go project is Travis. Travis will build and test your code in a stable environment every time you push a commit to github, which is awesome.
+The first thing you're going to want to integrate into your go project is Travis. Travis will build and test your code in a stable environment every time you push a commit to github, ensuring your 
+changes will work beyond your local configuration.
 
 To set up Travis you're first going to need a `.travis.yml` file, which you can find on the top level of this directory. Copy what you see there to get the deployment up and running.
+
 # cmd
 The `cmd` directory should hold entrypoints into your application.
 
@@ -28,9 +30,17 @@ the `pkg` directory should hold the majority of your source code, and anything t
 # main
 Any file titled `main.go` represents an entrypoint into your application. This will usually mean two things: the file contains a `main()`, or the file contains a crucial API endpoint.
 
-In the first case, you can actually run these files by calling `main()` function inside them. Large applications may have multiple entrypoints and therefore multiple `main.go` files, but for smaller applications and generall most purposes you should only need one.
+In the first case, you can actually run these files by calling `main()` function inside them. Large applications may have multiple entrypoints and therefore multiple `main.go` files, but for smaller applications and generally most purposes you should only need one. Run these file with the `go run main.go` command.
 
-In the second case, a `main.go` file will provide an crucial function that will likely be called in some `main()` or by another application. If you are writing a library meant to return a complicated struct, consider adding something like a `New()` constructor in a `main.go` file. Lower level calls in that library are best kept in other named files.
+Note that these files may have command line flags that are parsed using `flag.Parse()`. This will allow
+you to insert values via the command line, an example being `go run main.go -dsn='foo'` running our `main.go` file with the value `foo` for the variable `dsn`.
+
+In the second case, a `main.go` file will provide an crucial function that will likely be called in some `main()` or by another application. If you are writing a library meant to return a complicated struct, consider adding something like a `New()` constructor in a `main.go` file. This is more so a matter of naming convention, and lower level calls in that package are best kept in other named files.
+
+# types
+Golang allows you to construct complicated data types as `structs` like in C, as opposed to `classes` like in Python, Java or other OOP languages.
+
+New type structs should be defined in a standalone package file (see `pkg/mypkg/types.go`), all type definitions in one file. Instance methods on these types should have their own files (see `pkg/mypkg/exampletype.go`), one file for each type definition.
 
 # logging
 We use Sentry for all of our logging, see `pkg/observe/logging.go`. The go sentry client library is titled `raven-go`, and we wrap our logs using the `github.com/sirupsen/logrus` library. Using these two tools packages, we can redirect all of our log statements to an associated sentry client. Sentry should only be used for logging exceptions, giving us alerts when anything goes wrong in the produciton or dev environments.
@@ -49,6 +59,6 @@ The best golang library for creating routers is `github.com/gorilla/mux`, as opp
 Routers, when instantiated, can call the `handleFunc()` method to call a given handler. You should have one router calling many handlers.
 
 # testing
-The best practice for naming tests in golang is `filename_test`. These tests should be placed in the same directory, like those under `pkg/web/`. Using this naming convention, all test files will appear under the file they are testing. Placing your test files in a separate directory is not recommended, unless you are a GoPath wizard and believe that you have the knowledge and reasons to do so. 
+The best practice for naming tests in golang is `filename_test`. These tests should be placed in the same directory, like those under `pkg/web/`. Using this naming convention, all test files will appear right above the file they are testing. Placing your test files in a separate directory is not recommended, unless you are a GoPath wizard and believe that you have the knowledge and reasons to do so. 
 
 All golang test functions must start with `Test` in their names, in order for them to be visible to the go tester. Each test should accept the first argument `(t* Testing.t)`, which will most likely be the only argument you need. Run your `assert.Condition` statements with `(t)` always as the first argument.
