@@ -20,6 +20,7 @@ func InitLogging(debug bool, dsn string) error {
 		log.SetLevel(log.InfoLevel)
 	}
 
+	raven.SetDSN(dsn)
 	client, err := raven.NewClient(dsn, nil)
 	if err != nil {
 		log.Errorf("Failure to init raven client %s", err)
