@@ -30,10 +30,7 @@ the `pkg` directory should hold the majority of your source code, and anything t
 # main
 Any file titled `main.go` represents an entrypoint into your application. This will usually mean two things: the file contains a `main()`, or the file contains a crucial API endpoint.
 
-In the first case, you can actually run these files by calling `main()` function inside them. Large applications may have multiple entrypoints and therefore multiple `main.go` files, but for smaller applications and generally most purposes you should only need one. Run these file with the `go run main.go` command.
-
-Note that these files may have command line flags that are parsed using `flag.Parse()`. This will allow
-you to insert values via the command line, an example being `go run main.go -dsn='foo'` running our `main.go` file with the value `foo` for the variable `dsn`.
+Note that these files may have command line flags that are parsed using `flag.Parse()`. This will allow you to pass values via the command line, an example being `go run main.go -dsn='foo'` running our `main.go` file with the value `foo` for the variable `dsn`.
 
 In the second case, a `main.go` file will provide an crucial function that will likely be called in some `main()` or by another application. If you are writing a library meant to return a complicated struct, consider adding something like a `New()` constructor in a `main.go` file. This is more so a matter of naming convention, and lower level calls in that package are best kept in other named files.
 
@@ -48,17 +45,17 @@ We use Sentry for all of our logging, see `pkg/observe/logging.go`. The go sentr
 Another note about logrus: the line `import log "github.com/sirupsen/logrus"` will redirect any calls to `log` with calls to `logrus`. This is an example of import naming, something that can be extremely useful if you find two seperate libraries have very similar functionality. Some go libraries (ie. `Logrus`) are deliberately designed as a named import to replace other libraries (ie. `Logging`).
 
 # metrics
-We use Prometheus for all of our go metrics, see `pkg/observe/metrics.go`. Just like in Sentry, you're going to need to manually set up your Prometheus connection in your code.
+We use Prometheus for all of our application metrics, see `pkg/observe/metrics.go`. Just like in Sentry, you're going to need to manually set up your Prometheus connection in your code.
 
 # handlers
 All handlers are take in an `http.ResponseWriter` and a `*http.Request` as arguments. Handlers will be called by routers, which will provide a ResponseWriter, and will be the ones receiving http Requests. Handlers are meant to serve content and preform tasks (like a healthcheck, in `pkg/web/handlers.go`) when given these inputs.
 
 # routers
-The best golang library for creating routers is `github.com/gorilla/mux`, as opposed to the default routers provided in the http library. This decision to choose this library for Cogo was made for performance reasons.
+We use `github.com/gorilla/mux` for HTTP routing, as opposed to the default routers provided in the http library. This decision to choose this library for Cogo was made for developer productivity reasons. For applications requiring better performance, prefer the default `net/http` package.
 
 Routers, when instantiated, can call the `handleFunc()` method to call a given handler. You should have one router calling many handlers.
 
 # testing
-The best practice for naming tests in golang is `filename_test`. These tests should be placed in the same directory, like those under `pkg/web/`. Using this naming convention, all test files will appear right above the file they are testing. Placing your test files in a separate directory is not recommended, unless you are a GoPath wizard and believe that you have the knowledge and reasons to do so. 
+The best practice for naming tests in golang is `filename_test.go`. These tests should be placed in the same directory, like those under `pkg/web/`. Using this naming convention, all test files will appear right above the file they are testing. Placing your test files in a separate directory is not recommended, unless you are a GoPath wizard and believe that you have the knowledge and reasons to do so.
 
-All golang test functions must start with `Test` in their names, in order for them to be visible to the go tester. Each test should accept the first argument `(t* Testing.t)`, which will most likely be the only argument you need. Run your `assert.Condition` statements with `(t)` always as the first argument.
+All golang test functions must start with `Test` in their names, in order for them to be visible to the go tester. Each test should accept the first argument `(t* Testing.t)`, which will most likely be the only argument you need. We use [stretchr/testify](https://github.com/stretchr/testify) as our assertion library to ensure correctness.
