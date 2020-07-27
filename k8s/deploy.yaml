@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: boilerd
+  name: boilerd
+  namespace: mynamespace
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: boilerd
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: boilerd
+      name: boilerd
+    spec:
+      containers:
+      - args:
+        - -addr
+        - 0.0.0.0:5050
+        command:
+        - /go/bin/boilerd
+        image: docker.mycompany.com/cogolabs/go-boiler:v0.1
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /health
+            port: 5050
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+        name: boilerd

@@ -1,20 +1,13 @@
-dist: trusty
 language: go
 
-install: true
-
 before_install:
-  - mv $TRAVIS_BUILD_DIR $TRAVIS_BUILD_DIR.git
+  - curl -sL https://download.docker.com/linux/ubuntu/dists/trusty/pool/stable/amd64/docker-ce_17.03.2~ce-0~ubuntu-trusty_amd64.deb -o docker-ce.deb && sudo apt-get install ./docker-ce.deb
+
+install:
+  - sudo docker build -t myimage .
 
 script:
-  - go test ./... -race -coverprofile = ./coverprofile
-
-after_script:
-  - go get github.com/modocache/gover github.com/mattn/goveralls && gover && bash <(curl -s https://codecov.mycompany.com/bash) -f gover.coverprofile
-
+  - sudo docker run myimage go test -v ./...
 
 after_success:
-  - >
-    if [ -n "$TRAVIS_TAG" ]; then
-      bash <(curl -s https://raw.git.mycompany.com/kubes/deploy/master/deploy.sh)
-    fi
+  - bash <(curl -s https://raw.git.cogolo.net/kubes/deploy/master/deployYAML.sh)

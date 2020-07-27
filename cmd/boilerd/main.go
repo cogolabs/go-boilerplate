@@ -7,8 +7,8 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 
-	"git.mycompany.com/platform/go-boilerplate.git/pkg/observe"
-	"git.mycompany.com/platform/go-boilerplate.git/pkg/web"
+	"git.cogolo.net/cogolabs/go-boilerplate.git/pkg/observe"
+	"git.cogolo.net/cogolabs/go-boilerplate.git/pkg/web"
 	"github.com/facebookgo/grace/gracehttp"
 )
 
