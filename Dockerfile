@@ -1,4 +1,4 @@
-FROM docker.mycompany.com/platform/golang:1.14.6
+FROM docker.mycompany.com/platform/golang:1.15.6
 
 ENV GODEBUG netdns=cgo
 ENV TZ America/New_York
