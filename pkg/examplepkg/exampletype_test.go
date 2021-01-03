@@ -32,7 +32,7 @@ func (s *exampletypeSuite) TearDownTest() {
 
 func (s *exampletypeSuite) TestMyFunc() {
 	// If the following statement fails, the test will end immediately
-	s.Require().Equal(s.myt.PublicVal, testVal)
+	s.Require().Equal(s.et.PublicVal, testVal)
 
 	tests := []struct {
 		n        int
