@@ -1,0 +1,39 @@
+name: "Run tests"
+
+env:
+  CODECOV_TOKEN: MY_TOKEN
+  GOPRIVATE: git.colofoo.com
+
+on:
+  push:
+    branches: ["*"]
+    tags:
+      - "*"
+
+jobs:
+  test:
+    runs-on: [ self-hosted ]
+
+    services:
+      mysql:
+        image: docker.colofoo.com/myorg/mariadb:10.6.4
+        env:
+          MYSQL_DATABASE: dbname
+          MYSQL_USER: dbuser
+          MYSQL_PASSWORD: dbpass
+          MYSQL_ROOT_PASSWORD: rootpass
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.18
+
+      - name: Test
+        run: |
+          go test -race -coverprofile=coverage.txt -covermode=atomic ./...
